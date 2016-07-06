@@ -68,8 +68,12 @@ if __name__ == '__main__':
     for fname in sorted(os.listdir('data')):
         print fname
 
-        # hack to avoid data interpolating by pyart
-        radar = [pyart.io.read(os.path.join('data', fname), scans=[i]) for i in range(3)]
+        try:
+            # hack to avoid data interpolating by pyart
+            radar = [pyart.io.read(os.path.join('data', fname), scans=[i]) for i in range(3)]
+        except ValueError:
+            print "Can't read radar file. Please update PyART."
+            continue
 
         ref = radar[0].get_field(0, 'reflectivity')
         x, y, _ = radar[0].get_gate_x_y_z(0)
