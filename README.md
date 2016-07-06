@@ -1,15 +1,15 @@
-Implementation of Steiner and Smith Radar Quality-control algorithm
+Implementation of Steiner and Smith Radar Quality-Control Algorithm
 ===================================================================
 
-The quality-control algorithm by Steiner and Smith [1] is a hand-build decision
+The quality-control algorithm of Steiner and Smith [1] is a hand-built decision
 tree with five binary decision nodes. The features are hand-crafted and include
-reflectivity value, echo top, spin change, and the vertical gradient.
+the reflectivity value, echo top, spin change, and the vertical gradient.
 
 The following table contains the results of our implementation on the data
-sets from the paper (See Figures 4 - 8 in the paper).
+sets from the paper (see Figures 4 - 8 in the paper).
 
 <table>
-<tr><th>Original</th><th>Quality Controlled</th></tr>
+<tr><th>Original Radar Image</th><th>Quality-Controlled Radar Image</th></tr>
 <tr>
 <td><img src="img/KAMA19940525_003434.gz_orig.png"</td>
 <td><img src="img/KAMA19940525_003434.gz_qc.png"</td>
