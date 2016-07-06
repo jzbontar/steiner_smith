@@ -31,7 +31,8 @@ def steiner_smith(radar, refl_thresh=5, spin_thresh_a=8, spin_thresh_b=40, spin_
     echotop = data2.filled(0) >= refl_thresh
     echotop = scipy.ndimage.morphology.binary_dilation(echotop)
     spinchange = compute_spinchange(data0.filled(0)) >= spin_thresh
-    vertgrad = np.abs(data0 - data2).filled(0) > grad_thresh
+    elevation_diff = np.median(radar[2].elevation['data']) - np.median(radar[0].elevation['data'])
+    vertgrad = np.abs(data0 - data2).filled(0) > grad_thresh * elevation_diff
 
     r1 = ~zpixel
     r2 =  zpixel & ~echotop
