@@ -65,10 +65,6 @@ if __name__ == '__main__':
         data_bgr[data.mask] = 0
         cv2.imwrite(fname, data_bgr)
 
-    try:
-        os.mkdir('tmp')
-    except OSError:
-        pass
     for fname in sorted(os.listdir('data')):
         print fname
 
@@ -77,10 +73,10 @@ if __name__ == '__main__':
 
         ref = radar[0].get_field(0, 'reflectivity')
         x, y, _ = radar[0].get_gate_x_y_z(0)
-        grid = togrid(ref, x, y)
-        dump_ref_cmap('tmp/{}_orig.png'.format(fname), grid)
+        grid = togrid(ref, x, y, gridsize=256, lim=250)
+        dump_ref_cmap('img/{}_orig.png'.format(fname), grid)
 
         clutter = steiner_smith(radar)
         ref = np.ma.masked_where(clutter, ref)
-        grid = togrid(ref, x, y)
-        dump_ref_cmap('tmp/{}_qc.png'.format(fname), grid)
+        grid = togrid(ref, x, y, gridsize=256, lim=250)
+        dump_ref_cmap('img/{}_qc.png'.format(fname), grid)
