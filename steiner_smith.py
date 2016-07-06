@@ -7,16 +7,13 @@ def ipol_nearest(src, trg, data):
     dists, ix = tree.query(trg, k=1)
     return data[ix]
 
-def compute_spinchange(data):
-    spin = np.zeros_like(data)
-    for i in range(data.shape[0]):
-        signs = np.sign(np.trunc(np.diff(data[i]) / 2))
-        nnz = np.flatnonzero(signs)
-        spin[i,nnz[1:]] = np.diff(signs[nnz]) != 0
-    kernel = np.ones((11, 21))
+def compute_spinchange(data, window=(11, 21)):
+    spin = np.abs(np.diff(data, axis=1)) > 2
+    spin = np.column_stack((np.zeros(data.shape[0]), spin))
+    kernel = np.ones(window)
     spin = scipy.signal.fftconvolve(spin, kernel, 'same')
     possible = np.ones_like(spin)
-    possible[:,[0,-1]] = 0
+    possible[:,0] = 0
     possible = scipy.signal.fftconvolve(possible, kernel, 'same')
     return spin / possible
 
