@@ -49,11 +49,6 @@ Notes
   In particular, I had to changed GRADthresh from 10 dBZ/deg to 20 dBZ/deg to
   match the result from the paper.
 
-- The pyart library, used for reading the radar files, sometimes performs
-  linear interpolation in the radial direction when reading files, which
-  affects the SPINchange feature. I use a hack to prevent the linear
-  interpolation.
-
 
 References
 ----------

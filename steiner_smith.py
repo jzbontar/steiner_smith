@@ -18,10 +18,10 @@ def compute_spinchange(data, window=(11, 21)):
     return spin / possible
 
 def steiner_smith(radar, refl_thresh=5, spin_thresh_a=8, spin_thresh_b=40, spin_thresh_c=15, grad_thresh=20):
-    data0 = radar[0].get_field(0, 'reflectivity')
-    x0, y0, _ = radar[0].get_gate_x_y_z(0)
-    data2 = radar[2].get_field(0, 'reflectivity')
-    x2, y2, _ = radar[2].get_gate_x_y_z(0)
+    data0 = radar.get_field(0, 'reflectivity')
+    x0, y0, _ = radar.get_gate_x_y_z(0)
+    data2 = radar.get_field(2, 'reflectivity')
+    x2, y2, _ = radar.get_gate_x_y_z(2)
     src = np.column_stack((x2.ravel(), y2.ravel()))
     trg = np.column_stack((x0.ravel(), y0.ravel()))
     data2 = ipol_nearest(src, trg, data2.ravel()).reshape(data0.shape)
@@ -31,7 +31,7 @@ def steiner_smith(radar, refl_thresh=5, spin_thresh_a=8, spin_thresh_b=40, spin_
     echotop = data2.filled(0) >= refl_thresh
     echotop = scipy.ndimage.morphology.binary_dilation(echotop)
     spinchange = compute_spinchange(data0.filled(0)) >= spin_thresh
-    elevation_diff = np.median(radar[2].elevation['data']) - np.median(radar[0].elevation['data'])
+    elevation_diff = np.median(radar.get_elevation(2)) - np.median(radar.get_elevation(0))
     vertgrad = np.abs(data0 - data2).filled(0) > grad_thresh * elevation_diff
 
     r1 = ~zpixel
@@ -67,14 +67,13 @@ if __name__ == '__main__':
         print fname
 
         try:
-            # hack to avoid data interpolating by pyart
-            radar = [pyart.io.read(os.path.join('data', fname), scans=[i]) for i in range(3)]
+            radar = pyart.io.read(os.path.join('data', fname), scans=[0, 1, 2], linear_interp=False)
         except ValueError:
             print "Can't read radar file. Please update PyART."
             continue
 
-        ref = radar[0].get_field(0, 'reflectivity')
-        x, y, _ = radar[0].get_gate_x_y_z(0)
+        ref = radar.get_field(0, 'reflectivity')
+        x, y, _ = radar.get_gate_x_y_z(0)
         grid = togrid(ref, x, y, gridsize=256, lim=250)
         dump_ref_cmap('img/{}_orig.png'.format(fname), grid)
 
