@@ -67,7 +67,7 @@ if __name__ == '__main__':
         print fname
 
         try:
-            radar = pyart.io.read(os.path.join('data', fname), scans=[0, 1, 2], linear_interp=False)
+            radar = pyart.io.read(os.path.join('data', fname), field_names={'REF': 'reflectivity'})
         except ValueError:
             print "Can't read radar file. Please update PyART."
             continue
